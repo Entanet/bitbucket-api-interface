@@ -15,6 +15,15 @@ class BitbucketApi
     protected $refresh;
     protected $expiresIn;
 
+    /**
+     * BitbucketApi constructor.
+     * @param string $clientId
+     * @param string $secret
+     * @param null|string $token
+     * @param null|string $refresh
+     * @param null|int $expiresIn
+     * @throws \Exception
+     */
     public function __construct($clientId, $secret, $token = null, $refresh = null, $expiresIn = null)
     {
         $this->clientId = $clientId;
