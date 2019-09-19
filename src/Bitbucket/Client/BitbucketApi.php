@@ -2,6 +2,7 @@
 
 namespace Bitbucket\Client;
 
+use Bitbucket\Exceptions\BitbucketApiReturn401Exception;
 use \Bitbucket\Exceptions\BitbucketApiReturnErrorException;
 use \Bitbucket\Exceptions\BitbucketApiReturnUnknownException;
 
@@ -33,47 +34,58 @@ class BitbucketApi
         }
     }
 
+
+    /**
+     * Attempts to retrieve a new token using the specified client id and secret.
+     * @throws \Exception
+     */
     protected function setToken()
     {
-        $response = $this->sendCurlPost('https://bitbucket.org/site/oauth2/access_token',
-            ['grant_type' => 'client_credentials'], false);
+        try {
+            $response = $this->sendCurlPost('https://bitbucket.org/site/oauth2/access_token',
+                ['grant_type' => 'client_credentials'], false);
 
-        //catch all error
-        if ($response['http_status_code'] >= 400) {
-            throw new BitbucketApiReturnErrorException($response['http_status_code']);
-        }
-        else if ($response['http_status_code'] != 200) {
-            throw new BitbucketApiReturnUnknownException($response['http_status_code']);
-        }
-        else {
             $responseDecode = json_decode($response['body'], true);
 
             $this->token = $responseDecode['access_token'];
             $this->refresh = $responseDecode['refresh_token'];
             $this->expiresIn = $responseDecode['expires_in'];
+
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
+    /**
+     * Attempts to retrieve new token using the current refresh token.
+     * @throws \Exception
+     */
     public function getTokenFromRefresh()
     {
-        $response = $this->sendCurlPost('https://bitbucket.org/site/oauth2/access_token',
-            ['grant_type=refresh_token', 'refresh_token='.$this->refresh], false);
+        try {
+            $response = $this->sendCurlPost('https://bitbucket.org/site/oauth2/access_token',
+                ['grant_type=refresh_token', 'refresh_token=' . $this->refresh], false);
 
-        if ($response['http_status_code'] == 200) {
             $responseDecode = json_decode($response['body'], true);
 
             $this->token = $responseDecode['access_token'];
             $this->refresh = $responseDecode['refresh_token'];
             $this->expiresIn = $responseDecode['expires_in'];
+
+        } catch (\Exception $exception) {
+            throw $exception;
         }
-        else if ($response['http_status_code'] >= 400) {
-            throw new BitbucketApiReturnErrorException($response['http_status_code']);
-        }
-        else {
-            throw new BitbucketApiReturnUnknownException($response['http_status_code']);
-        }
+
     }
 
+    /**
+     * Send curl post request
+     * @param string $url
+     * @param array $postData
+     * @param bool $useToken
+     * @return array|bool|string
+     * @throws \Exception
+     */
     public function sendCurlPost($url, $postData = [], $useToken = true)
     {
         $curlOpt = [
@@ -87,18 +99,44 @@ class BitbucketApi
         $headers = ($useToken? ['Authorization: Bearer ' . $this->token]:[]);
 
 
-        return $this->sendCurl($url, $curlOpt, $headers);
+        try {
+            return $this->sendCurl($url, $curlOpt, $headers);
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
     }
 
+    /**
+     * Send a curl get request
+     * @param string $url
+     * @param bool $useToken
+     * @return array
+     * @throws \Exception
+     */
     public function sendCurlGet($url, $useToken = true)
     {
         $curlOpt = [];
         $curlOpt[CURLOPT_USERPWD] = (!$useToken? $this->clientId . ':' . $this->secret : null);
         $headers = ($useToken !== null? ['Authorization: Bearer ' . $this->token]:[]);
 
-        return $this->sendCurl($url, $curlOpt, $headers);
+        try {
+            return $this->sendCurl($url, $curlOpt, $headers);
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
     }
 
+    /**
+     * Sends a curl request to the specified endpoint, CURLOPT_RETURNTRANSFER always set to true.
+     * @param string $url
+     * @param array $curlOpts
+     * @param array $headers
+     * @return array|bool|string
+     * @throws \Exception
+     * @throws BitbucketApiReturn401Exception
+     * @throws BitbucketApiReturnErrorException
+     * @throws BitbucketApiReturnUnknownException
+     */
     protected function sendCurl($url, $curlOpts = [], $headers = [])
     {
         $baseCurlOPts = [
@@ -124,7 +162,21 @@ class BitbucketApi
             'body' => $response
         ];
 
+        //Done with curl connection, close
         curl_close($curl);
-        return $response;
+
+        if ($response['http_status_code'] == 200) {
+            return $response;
+        }
+        else if ($response['http_status_code'] == 401) {
+            throw new BitbucketApiReturn401Exception();
+        }
+        else if ($response['http_status_code'] >= 400) {
+            throw new BitbucketApiReturnErrorException($response['http_status_code']);
+        }
+        //Catch all
+        else {
+            throw new BitbucketApiReturnUnknownException($response['http_status_code']);
+        }
     }
 }
