@@ -1,0 +1,25 @@
+{
+  "name": "entanet/bitbucket-api-interface",
+  "description": "A Bitbucket api interface",
+  "type": "library",
+  "require": {
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Bitbucket\\": "src/Bitbucket"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Bitbucet\\Tests\\": "tests"
+    }
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mike Bywater"
+    }
+  ]
+}
