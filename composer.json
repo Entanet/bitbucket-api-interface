@@ -9,12 +9,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Bitbucket\\": "src/Bitbucket"
+      "Bitbucket\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Bitbucet\\Tests\\": "tests"
+      "Bitbucket\\Tests\\": "tests/"
     }
   },
   "license": "MIT",
