@@ -41,6 +41,12 @@ class BitbucketApi
                 throw $exception;
             }
         }
+        //already have tokens, set class properties
+        else {
+            $this->token = $token;
+            $this->refresh = $refresh;
+            $this->expiresIn = $expiresIn;
+        }
     }
 
 
