@@ -194,4 +194,31 @@ class BitbucketApi
             throw new BitbucketApiReturnUnknownException($response['http_status_code']);
         }
     }
+
+    /**
+     * Returns current Barer token.
+     * @return string|null
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Returns current refresh token.
+     * @return string|null
+     */
+    public function getRefresh()
+    {
+        return $this->refresh;
+    }
+
+    /**
+     * Returns token expire time in seconds from time when token was initialised.
+     * @return int|null
+     */
+    public function getExpiresIn()
+    {
+        return $this->expiresIn;
+    }
 }

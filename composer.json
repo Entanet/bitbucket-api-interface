@@ -3,7 +3,8 @@
   "description": "A Bitbucket api interface",
   "type": "library",
   "require": {
-    "php": "^7.2"
+    "php": "^7.2",
+    "ext-curl": "*"
   },
   "require-dev": {
   },
