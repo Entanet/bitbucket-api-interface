@@ -3,6 +3,7 @@
 namespace Bitbucket\Client;
 
 use Bitbucket\Exceptions\BitbucketApiReturn401Exception;
+use Bitbucket\Exceptions\BitbucketApiReturn404Exception;
 use \Bitbucket\Exceptions\BitbucketApiReturnErrorException;
 use \Bitbucket\Exceptions\BitbucketApiReturnUnknownException;
 
@@ -185,6 +186,9 @@ class BitbucketApi
         }
         else if ($response['http_status_code'] == 401) {
             throw new BitbucketApiReturn401Exception();
+        }
+        else if ($response['http_status_code'] == 404) {
+            throw new BitbucketApiReturn404Exception();
         }
         else if ($response['http_status_code'] >= 400) {
             throw new BitbucketApiReturnErrorException($response['http_status_code']);
