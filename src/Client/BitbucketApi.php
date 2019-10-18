@@ -9,7 +9,6 @@ use \Bitbucket\Exceptions\BitbucketApiReturnUnknownException;
 
 class BitbucketApi
 {
-
     protected $clientId;
     protected $secret;
     protected $token;
@@ -108,12 +107,12 @@ class BitbucketApi
             CURLOPT_POST => true
         ];
 
+
         //Set variable CURLOPT's
         $curlOpt[CURLOPT_USERPWD] = (!$useToken? $this->clientId . ':' . $this->secret : null);
         $curlOpt[CURLOPT_POSTFIELDS] = $postData? $postData : null;
         //Set barer token if available
         $headers = ($useToken? ['Authorization: Bearer ' . $this->token]:[]);
-
 
         try {
             return $this->sendCurl($url, $curlOpt, $headers);
@@ -133,7 +132,7 @@ class BitbucketApi
     {
         $curlOpt = [];
         $curlOpt[CURLOPT_USERPWD] = (!$useToken? $this->clientId . ':' . $this->secret : null);
-        $headers = ($useToken !== null? ['Authorization: Bearer ' . $this->token]:[]);
+        $headers = ($useToken? ['Authorization: Bearer ' . $this->token]:[]);
 
         try {
             return $this->sendCurl($url, $curlOpt, $headers);
