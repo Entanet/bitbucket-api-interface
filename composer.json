@@ -4,9 +4,11 @@
   "type": "library",
   "require": {
     "php": "^7.2",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "phpunit/phpunit": "^8.4"
   },
   "require-dev": {
+    "mockery/mockery": "^1.2"
   },
   "autoload": {
     "psr-4": {
@@ -15,7 +17,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Bitbucket\\Tests\\": "tests/"
+      "Tests\\": "tests/"
     }
   },
   "license": "MIT",
