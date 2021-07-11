@@ -3,9 +3,9 @@
   "description": "A Bitbucket api interface",
   "type": "library",
   "require": {
-    "php": "^7.2",
+    "php": "^7.2|^8.0",
     "ext-curl": "*",
-    "phpunit/phpunit": "^7.5"
+    "phpunit/phpunit": "^8.5|^9.3"
   },
   "require-dev": {
     "mockery/mockery": "^1.2"
